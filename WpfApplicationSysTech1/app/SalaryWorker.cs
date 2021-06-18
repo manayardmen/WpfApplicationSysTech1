@@ -13,6 +13,7 @@ namespace WpfApplicationSysTech1.app
 
         private static void CalcSalaryForAllWorkers(DateTime fromDate, DateTime toDate)
         {
+            Console.WriteLine("CalcSalaryForAllWorkers");
             var context = AppMain.Instance.Context;
 
             // Сбрасываем значения ЗП
@@ -20,8 +21,10 @@ namespace WpfApplicationSysTech1.app
 
             CalcSalaryForWorkersWithoutSubWorkers(fromDate, toDate);
 
+            var currentUsers = context.Users.ToList();
+
             // Если данные о зарплатах не равны числу всех сотрудников
-            while (_workersSalary.Count < context.Users.Count())
+            while (_workersSalary.Count < currentUsers.Count)
             {
                 // Ищем тех, у кого в подчинении есть только те, которые есть в массиве _workersSalary
                 CalcSalaryForWorkersWithKnownSubs(fromDate, toDate);
@@ -39,7 +42,7 @@ namespace WpfApplicationSysTech1.app
             if (workerSalary != null)
                 result = workerSalary.WorkerSalary;
             else
-                Console.WriteLine("ЗП для этого сотрудника просто нет");
+                Console.WriteLine("ЗП для этого сотрудника просто нет (GetSalaryForThisWorker)");
 
             return result;
         }
@@ -195,6 +198,7 @@ namespace WpfApplicationSysTech1.app
 
                         // Посчитаем сотруднику без должности ЗП по базовой должности
                         default:
+                            Console.WriteLine("Ошибка, расчет ЗП идет не по должности (CalcSalaryForWorkersWithoutSubWorkers)");
                             userResultSalary = CalcSalaryForEmployee(u.Id, fromDate, toDate);
                             break;
                     }
@@ -203,7 +207,7 @@ namespace WpfApplicationSysTech1.app
                 {
                     // Посчитаем сотруднику без должности ЗП по базовой должности
                     userResultSalary = CalcSalaryForEmployee(u.Id, fromDate, toDate);
-                    Console.WriteLine("Найден сотрудник без должности");
+                    Console.WriteLine("Найден сотрудник без должности (CalcSalaryForWorkersWithoutSubWorkers)");
                 }
 
                 // Добавляем ЗП в общий массив
@@ -243,6 +247,7 @@ namespace WpfApplicationSysTech1.app
 
                         // Посчитаем сотруднику без должности ЗП по базовой должности
                         default:
+                            Console.WriteLine("Ошибка, расчет ЗП идет не по должности (CalcSalaryForWorkersWithKnownSubs)");
                             userResultSalary = CalcSalaryForEmployee(u.Id, fromDate, toDate);
                             break;
                     }
@@ -251,7 +256,7 @@ namespace WpfApplicationSysTech1.app
                 {
                     // Посчитаем сотруднику без должности ЗП по базовой должности
                     userResultSalary = CalcSalaryForEmployee(u.Id, fromDate, toDate);
-                    Console.WriteLine("Найден сотрудник без должности");
+                    Console.WriteLine("Найден сотрудник без должности (CalcSalaryForWorkersWithKnownSubs)");
                 }
 
                 // Добавляем ЗП в общий массив

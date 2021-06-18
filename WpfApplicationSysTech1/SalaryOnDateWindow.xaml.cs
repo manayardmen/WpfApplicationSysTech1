@@ -16,6 +16,7 @@ namespace WpfApplicationSysTech1
 
             WorkerTextBlock.Text = "Для сотрудника: " + SelectedUserData.SelectedUser.Name;
 
+            SalaryDatePicker.SelectedDate = _selectedDate;
         }
 
         // Скрыть блокирующий блок

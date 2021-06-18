@@ -387,7 +387,7 @@ namespace WpfApplicationSysTech1.app.repo
             foreach (var bossUser in currentUsers)
             {
                 var subWorkers =  context.Users.Where(u => u.BossId == bossUser.Id).ToList();
-                var isOnlyKnownWorkers = true;
+                var isOnlyKnownWorkers = false;
                 foreach (var subWorker in subWorkers)
                 {
                     if (!workersIds.Exists(x=> x == subWorker.Id))
@@ -395,6 +395,8 @@ namespace WpfApplicationSysTech1.app.repo
                         isOnlyKnownWorkers = false;
                         break;
                     }
+
+                    isOnlyKnownWorkers = true;
                 }
 
                 if (isOnlyKnownWorkers)
@@ -442,6 +444,9 @@ namespace WpfApplicationSysTech1.app.repo
                 MessageBox.Show(e.Message, Const.AppName);
             }
 
+            Console.WriteLine("Подчиненных для кого-то (GetOnlyMySubWorkers):");
+            Console.WriteLine(resultList.Count);
+
             return resultList;
         }
 
@@ -453,6 +458,9 @@ namespace WpfApplicationSysTech1.app.repo
             var fistLevelSubs = GetOnlyMySubWorkers(userId);
 
             var nextLevelSubs = new List<int>();
+
+            foreach (var s in fistLevelSubs)
+                nextLevelSubs.Add(s);
 
             do
             {
@@ -480,6 +488,9 @@ namespace WpfApplicationSysTech1.app.repo
                     fistLevelSubs.Add(subId);
 
             } while (nextLevelSubs.Count > 0);
+
+            Console.WriteLine("Подчиненных для Salesman:");
+            Console.WriteLine(resultList.Count);
 
             return resultList;
         }
