@@ -19,30 +19,22 @@ namespace WpfApplicationSysTech1.app
         // Win32 base APIs
 #if DEBUG
         [DllImport("Kernel32")]
-        public static extern void AllocConsole();
+        private static extern void AllocConsole();
 #endif
 
         private static AppMain _instance;
 
         // Статический экземпляр объекта
-        public static AppMain Instance
-        {
-            get
-            {
-                // Получить экземпляр объекта
-                if (_instance == null) _instance = new AppMain();
-                return _instance;
-            }
-        }
+        public static AppMain Instance => _instance ?? (_instance = new AppMain());
 
         public bool IsAdmin { get; private set; }
         public bool IsModer { get; private set; }
         public AppSettings AppSettings { get; private set; }
-        public EventsHub EventsHub { get; }
+        private EventsHub EventsHub { get; }
         public ApplicationContext Context { get; }
 
         public User CurrentUser { get; private set; }
-        public List<Position> Positions { get; set; }
+        public List<Position> Positions { get; private set; }
 
         private AppMain()
         {
@@ -79,7 +71,7 @@ namespace WpfApplicationSysTech1.app
         {
             CurrentUser = new User
             {
-                Name = "Администратор",
+                Name = Const.AdminName,
                 Login = AppSettings.AdminLogin
             };
 

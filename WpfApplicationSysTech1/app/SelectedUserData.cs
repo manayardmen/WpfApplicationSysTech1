@@ -22,7 +22,7 @@ namespace WpfApplicationSysTech1.app
 
         public static void ResetSelectedUser()
         {
-            SetSelectedUser(null, null);
+            SetSelectedUser();
         }
 
         public static void SetSubSelectedUser(User u1 = null, UserListItem u2 = null)

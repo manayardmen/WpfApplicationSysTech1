@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using WpfApplicationSysTech1.app.models;
+using WpfApplicationSysTech1.Properties;
 
 namespace WpfApplicationSysTech1.app.repo
 {
@@ -68,7 +69,7 @@ namespace WpfApplicationSysTech1.app.repo
         }
 
         // Найти пользователя по логину
-        public static User FindUser(string userLogin)
+        private static User FindUser(string userLogin)
         {
             var context = AppMain.Instance.Context;
             User result;
@@ -178,6 +179,8 @@ namespace WpfApplicationSysTech1.app.repo
             }
         }
 
+
+
         // Изменить роль пользователю
         public static void ChangeUserRole(int userId, int roleId)
         {
@@ -185,7 +188,8 @@ namespace WpfApplicationSysTech1.app.repo
 
             try
             {
-                var user = context.Users.FirstOrDefault(u => u.Id == userId);
+                //var user = context.Users.FirstOrDefault(u => u.Id == userId);
+                var user = FindUser(userId);
                 if (user != null)
                 {
                     var positions = context.Positions.ToList();
@@ -196,31 +200,28 @@ namespace WpfApplicationSysTech1.app.repo
                         if (newUserPosition.IsCanHaveSubs == 0)
                         {
                             // Теперь сотрудник не может иметь подчиненных
-                            var isSuccess = RemoveThisUserIdAsBoss(userId);
-
-                            if (isSuccess)
+                            if (RemoveThisUserIdAsBoss(userId))
                             {
                                 user.PositionId = roleId;
                                 context.SaveChanges();
+
+                                return;
                             }
-                            else
-                            {
-                                Console.WriteLine("Не удалось установить новую роль сотруднику, так как не удалось удалить его как начальника у других пользователей");
-                                MessageBox.Show("Не удалось установить новую роль сотруднику, так как не удалось удалить его как начальника у других пользователей", Const.AppName);
-                            }
+
+                            Console.WriteLine(Resources.CannotSetNewRoleToUserAsBossCannotRemove);
+                            MessageBox.Show(Resources.CannotSetNewRoleToUserAsBossCannotRemove, Const.AppName);
+
+                            return;
                         }
-                        else
-                        {
-                            user.PositionId = roleId;
-                            context.SaveChanges();
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Не удалось установить новую позицию для пользователя (позиция не найдена)");
-                        MessageBox.Show("Не удалось установить новую позицию для пользователя (позиция не найдена)", Const.AppName);
+
+                        user.PositionId = roleId;
+                        context.SaveChanges();
+
+                        return;
                     }
 
+                    Console.WriteLine(Resources.CannotSetNewUserPositionId);
+                    MessageBox.Show(Resources.CannotSetNewUserPositionId, Const.AppName);
                 }
             }
             catch (Exception e)
@@ -231,7 +232,7 @@ namespace WpfApplicationSysTech1.app.repo
         }
 
         // Удалить этого пользователя как начальника у других пользователей
-        public static bool RemoveThisUserIdAsBoss(int userId)
+        private static bool RemoveThisUserIdAsBoss(int userId)
         {
             var result = false;
 
@@ -366,7 +367,7 @@ namespace WpfApplicationSysTech1.app.repo
                 }
                 else
                 {
-                    Console.WriteLine("Ошибка нет пользователя на удаление");
+                    Console.WriteLine(Resources.ErrorNoUserToDelete);
                 }
             }
             catch (Exception e)
@@ -399,7 +400,8 @@ namespace WpfApplicationSysTech1.app.repo
                     isOnlyKnownWorkers = true;
                 }
 
-                if (isOnlyKnownWorkers)
+                // Содержит только уже известных подчиненных, но и для этого пользователя мы не считали еще ЗП
+                if (isOnlyKnownWorkers && !workersIds.Exists(x=> x == bossUser.Id))
                     resultList.Add(bossUser);
             }
 
@@ -444,9 +446,6 @@ namespace WpfApplicationSysTech1.app.repo
                 MessageBox.Show(e.Message, Const.AppName);
             }
 
-            Console.WriteLine("Подчиненных для кого-то (GetOnlyMySubWorkers):");
-            Console.WriteLine(resultList.Count);
-
             return resultList;
         }
 
@@ -456,11 +455,7 @@ namespace WpfApplicationSysTech1.app.repo
             var resultList = new List<int>();
 
             var fistLevelSubs = GetOnlyMySubWorkers(userId);
-
             var nextLevelSubs = new List<int>();
-
-            foreach (var s in fistLevelSubs)
-                nextLevelSubs.Add(s);
 
             do
             {
@@ -488,9 +483,6 @@ namespace WpfApplicationSysTech1.app.repo
                     fistLevelSubs.Add(subId);
 
             } while (nextLevelSubs.Count > 0);
-
-            Console.WriteLine("Подчиненных для Salesman:");
-            Console.WriteLine(resultList.Count);
 
             return resultList;
         }

@@ -4,6 +4,7 @@
     public static class Const
     {
         public const string AppName = "Приложение";
+        public const string AdminName = "Администратор";
         public const string ErrorTooltip = "Это поле введено не корректно!";
         public const string DefaultDbFilePath = ".\\AppUsers.db";
         public const string AppSettingsFilePath = ".\\appsettings.json";
@@ -14,5 +15,6 @@
         public const string DefaultEditorPositionName = "Manager";
 
         public const int MinFieldLength = 3;
+        public const int DefaultNoBossId = -1;
     }
 }

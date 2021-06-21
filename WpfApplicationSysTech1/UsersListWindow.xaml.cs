@@ -12,18 +12,16 @@ namespace WpfApplicationSysTech1
 {
     public partial class UsersListWindow
     {
-        private readonly AppMain _appMain;
-
         public UsersListWindow()
         {
             InitializeComponent();
 
-            _appMain = AppMain.Instance;
+            var appMain = AppMain.Instance;
 
             ShowBlockControlsBorder();
             new Thread(LoadUsersList).Start();
 
-            if (!_appMain.IsAdmin && !_appMain.IsModer)
+            if (!appMain.IsAdmin && !appMain.IsModer)
             {
                 AddNewUserButton.Visibility = Visibility.Hidden;
             }
@@ -76,9 +74,6 @@ namespace WpfApplicationSysTech1
                 var item = (sender as ListView)?.SelectedItem;
                 if (item is UserListItem userItem)
                 {
-
-
-
                     var user = new User
                     {
                         Id = userItem.Id,
@@ -93,7 +88,7 @@ namespace WpfApplicationSysTech1
 
                     SelectedUserData.SetSelectedUser(user, userItem);
 
-                    // Определелить выбрали ли мы сами себя или нет (если мы не администратор, а зашли как пользователь)
+                    // Определить выбрали ли мы сами себя или нет (если мы не администратор, а зашли как пользователь)
                     var isSelfUser = userItem.Id == AppMain.Instance.CurrentUser.Id;
                     if (isSelfUser)
                     {

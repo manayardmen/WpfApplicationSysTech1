@@ -79,6 +79,24 @@ namespace WpfApplicationSysTech1.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Не удалось установить новую роль сотруднику, так как не удалось удалить его как начальника у других пользователей.
+        /// </summary>
+        internal static string CannotSetNewRoleToUserAsBossCannotRemove {
+            get {
+                return ResourceManager.GetString("CannotSetNewRoleToUserAsBossCannotRemove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удалось установить новую позицию для пользователя (позиция не найдена).
+        /// </summary>
+        internal static string CannotSetNewUserPositionId {
+            get {
+                return ResourceManager.GetString("CannotSetNewUserPositionId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Не найден файл базы данных.
         /// </summary>
         internal static string DbFileNotFoundText {
@@ -88,11 +106,92 @@ namespace WpfApplicationSysTech1.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ошибка, расчет ЗП идет не по должности.
+        /// </summary>
+        internal static string ErrorCalcSalaryNoRoleWorker {
+            get {
+                return ResourceManager.GetString("ErrorCalcSalaryNoRoleWorker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ошибка, позиция Employee не найдена в списке позиций.
+        /// </summary>
+        internal static string ErrorEmployeePositionNotFound {
+            get {
+                return ResourceManager.GetString("ErrorEmployeePositionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ошибка, позиция Manager не найдена в списке позиций.
+        /// </summary>
+        internal static string ErrorManagerPositionNotFound {
+            get {
+                return ResourceManager.GetString("ErrorManagerPositionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ошибка нет пользователя на удаление.
+        /// </summary>
+        internal static string ErrorNoUserToDelete {
+            get {
+                return ResourceManager.GetString("ErrorNoUserToDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ошибка, позиция Salesman не найдена в списке позиций.
+        /// </summary>
+        internal static string ErrorSalesmanPositionNotFound {
+            get {
+                return ResourceManager.GetString("ErrorSalesmanPositionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Найден сотрудник без должности (сотрудник без подчиненных).
+        /// </summary>
+        internal static string FoundWorkerWithoutRoleWithoutSubs {
+            get {
+                return ResourceManager.GetString("FoundWorkerWithoutRoleWithoutSubs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Загружаем список позиций.
         /// </summary>
         internal static string LoadingPositionsArrText {
             get {
                 return ResourceManager.GetString("LoadingPositionsArrText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SalaryForManager, не найдена зарплата подчиненного.
+        /// </summary>
+        internal static string SalaryForManagerSalaryForSubNotFound {
+            get {
+                return ResourceManager.GetString("SalaryForManagerSalaryForSubNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SalaryForSalesman, не найдена зарплата подчиненного.
+        /// </summary>
+        internal static string SalaryForSalesmanSalaryForSubNotFound {
+            get {
+                return ResourceManager.GetString("SalaryForSalesmanSalaryForSubNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ЗП для этого сотрудника просто нет (вычисление ЗП конкретного сотрудника).
+        /// </summary>
+        internal static string SalaryForThisSelectedWorkerNotFound {
+            get {
+                return ResourceManager.GetString("SalaryForThisSelectedWorkerNotFound", resourceCulture);
             }
         }
         
@@ -120,6 +219,15 @@ namespace WpfApplicationSysTech1.Properties {
         internal static string UserListItemCreationErrorText {
             get {
                 return ResourceManager.GetString("UserListItemCreationErrorText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Найден сотрудник без должности (сотрудники с уже известными подчиненными).
+        /// </summary>
+        internal static string WorkerWithoutRoleWithKnownSubs {
+            get {
+                return ResourceManager.GetString("WorkerWithoutRoleWithKnownSubs", resourceCulture);
             }
         }
     }

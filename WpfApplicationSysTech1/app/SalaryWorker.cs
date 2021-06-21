@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using WpfApplicationSysTech1.app.models;
 using WpfApplicationSysTech1.app.repo;
 using WpfApplicationSysTech1.app.types;
+using WpfApplicationSysTech1.Properties;
 
 namespace WpfApplicationSysTech1.app
 {
-    // Рассчет зарплат
+    // Расчет зарплат
     public static class SalaryWorker
     {
         private static List<SalaryOfWorker> _workersSalary;
 
         private static void CalcSalaryForAllWorkers(DateTime fromDate, DateTime toDate)
         {
-            Console.WriteLine("CalcSalaryForAllWorkers");
             var context = AppMain.Instance.Context;
 
             // Сбрасываем значения ЗП
@@ -42,7 +43,7 @@ namespace WpfApplicationSysTech1.app
             if (workerSalary != null)
                 result = workerSalary.WorkerSalary;
             else
-                Console.WriteLine("ЗП для этого сотрудника просто нет (GetSalaryForThisWorker)");
+                Console.WriteLine(Resources.SalaryForThisSelectedWorkerNotFound);
 
             return result;
         }
@@ -50,7 +51,7 @@ namespace WpfApplicationSysTech1.app
         // Получить разницу в годах
         private static int GetYearsDifferenceInDates(DateTime a, DateTime b)
         {
-            DateTime beginTime = new DateTime(1, 1, 1);
+            var beginTime = new DateTime(1, 1, 1);
 
             TimeSpan span = b - a;
             int years = (beginTime + span).Year - 1;
@@ -59,7 +60,7 @@ namespace WpfApplicationSysTech1.app
         }
 
         // Сотрудник без подчиненных
-        private static double CalcSalaryForEmployee(int userId, DateTime fromDate, DateTime toDate)
+        private static double CalcSalaryForEmployee(DateTime fromDate, DateTime toDate)
         {
             var result = 0.0;
 
@@ -81,7 +82,7 @@ namespace WpfApplicationSysTech1.app
             }
             else
             {
-                Console.WriteLine("Ошибка, позиция Employee не найдена в списке позиций");
+                Console.WriteLine(Resources.ErrorEmployeePositionNotFound);
             }
 
             return result;
@@ -102,7 +103,7 @@ namespace WpfApplicationSysTech1.app
                 if (thisWorkerSalaryInfo != null)
                     mySubsSalary += thisWorkerSalaryInfo.WorkerSalary;
                 else
-                    Console.WriteLine("SalaryForManager, не найдена зарплата подчиненного");
+                    Console.WriteLine(Resources.SalaryForManagerSalaryForSubNotFound);
             }
 
             var datesYearsDiff = GetYearsDifferenceInDates(fromDate, toDate);
@@ -123,7 +124,7 @@ namespace WpfApplicationSysTech1.app
             }
             else
             {
-                Console.WriteLine("Ошибка, позиция Manager не найдена в списке позиций");
+                Console.WriteLine(Resources.ErrorManagerPositionNotFound);
             }
 
             return result;
@@ -144,7 +145,7 @@ namespace WpfApplicationSysTech1.app
                 if (thisWorkerSalaryInfo != null)
                     mySubsSalary += thisWorkerSalaryInfo.WorkerSalary;
                 else
-                    Console.WriteLine("SalaryForSalesman, не найдена зарплата подчиненного");
+                    Console.WriteLine(Resources.SalaryForSalesmanSalaryForSubNotFound);
             }
 
             var datesYearsDiff = GetYearsDifferenceInDates(fromDate, toDate);
@@ -165,12 +166,13 @@ namespace WpfApplicationSysTech1.app
             }
             else
             {
-                Console.WriteLine("Ошибка, позиция Salesman не найдена в списке позиций");
+                Console.WriteLine(Resources.ErrorSalesmanPositionNotFound);
             }
 
             return result;
         }
 
+        // Считаем ЗП для сотрудников без подчиненных
         private static void CalcSalaryForWorkersWithoutSubWorkers(DateTime fromDate, DateTime toDate)
         {
             var users = UsersRepo.GetUsersWithoutSubWorkers();
@@ -178,89 +180,88 @@ namespace WpfApplicationSysTech1.app
 
             foreach (var u in users)
             {
-                var userResultSalary = 0.0;
+                double userResultSalary;
                 var userPosition = positions.FirstOrDefault(p => p.Id == u.PositionId);
                 if (userPosition != null)
                 {
-                    switch (userPosition.Name)
-                    {
-                        case "Employee":
-                            userResultSalary = CalcSalaryForEmployee(u.Id, fromDate, toDate);
-                            break;
-
-                        case "Manager":
-                            userResultSalary = CalcSalaryForManager(u.Id, fromDate, toDate);
-                            break;
-
-                        case "Salesman":
-                            userResultSalary = CalcSalaryForSalesman(u.Id, fromDate, toDate);
-                            break;
-
-                        // Посчитаем сотруднику без должности ЗП по базовой должности
-                        default:
-                            Console.WriteLine("Ошибка, расчет ЗП идет не по должности (CalcSalaryForWorkersWithoutSubWorkers)");
-                            userResultSalary = CalcSalaryForEmployee(u.Id, fromDate, toDate);
-                            break;
-                    }
+                    userResultSalary = MakeSalaryCalcForPosition(u.Id, userPosition, fromDate, toDate);
                 }
                 else
                 {
                     // Посчитаем сотруднику без должности ЗП по базовой должности
-                    userResultSalary = CalcSalaryForEmployee(u.Id, fromDate, toDate);
-                    Console.WriteLine("Найден сотрудник без должности (CalcSalaryForWorkersWithoutSubWorkers)");
+                    userResultSalary = CalcSalaryForEmployee(fromDate, toDate);
+                    Console.WriteLine(Resources.FoundWorkerWithoutRoleWithoutSubs);
                 }
 
                 // Добавляем ЗП в общий массив
-                _workersSalary.Add(new SalaryOfWorker { WorkerId = u.Id, WorkerSalary = userResultSalary});
+                _workersSalary.Add(new SalaryOfWorker { WorkerId = u.Id, WorkerSalary = userResultSalary });
             }
+        }
+
+        // Получить идентификаторы известных ЗП работников
+        private static List<int> GetKnownWorkersSalaryIds()
+        {
+            var resultList = new List<int>();
+            foreach (var workerSalary in _workersSalary)
+                resultList.Add(workerSalary.WorkerId);
+
+            return resultList;
+        }
+
+        // Расчет ЗП для выбранной должности
+        private static double MakeSalaryCalcForPosition(int userId, Position p, DateTime fromDate, DateTime toDate)
+        {
+            double userResultSalary;
+
+            switch (p.Name)
+            {
+                case "Employee":
+                    userResultSalary = CalcSalaryForEmployee(fromDate, toDate);
+                    break;
+
+                case "Manager":
+                    userResultSalary = CalcSalaryForManager(userId, fromDate, toDate);
+                    break;
+
+                case "Salesman":
+                    userResultSalary = CalcSalaryForSalesman(userId, fromDate, toDate);
+                    break;
+
+                // Посчитаем сотруднику без должности ЗП по базовой должности
+                default:
+                    Console.WriteLine(Resources.ErrorCalcSalaryNoRoleWorker);
+                    userResultSalary = CalcSalaryForEmployee(fromDate, toDate);
+                    break;
+            }
+
+            return userResultSalary;
         }
 
         // Функция для циклического подсчета ЗП сотрудников, на основе известных ЗП подчиненных сотрудников
         private static void CalcSalaryForWorkersWithKnownSubs(DateTime fromDate, DateTime toDate)
         {
-            var workersIdsWithSalary = new List<int>();
-            foreach (var workerSalary in _workersSalary)
-                workersIdsWithSalary.Add(workerSalary.WorkerId);
+            var workersIdsWithSalary = GetKnownWorkersSalaryIds();
 
             var users = UsersRepo.GetBossUsersWithSubsFromThisArr(workersIdsWithSalary);
             var positions = AppMain.Instance.Positions;
 
             foreach (var u in users)
             {
-                var userResultSalary = 0.0;
+                double userResultSalary;
                 var userPosition = positions.FirstOrDefault(p => p.Id == u.PositionId);
                 if (userPosition != null)
                 {
-                    switch (userPosition.Name)
-                    {
-                        case "Employee":
-                            userResultSalary = CalcSalaryForEmployee(u.Id, fromDate, toDate);
-                            break;
-
-                        case "Manager":
-                            userResultSalary = CalcSalaryForManager(u.Id, fromDate, toDate);
-                            break;
-
-                        case "Salesman":
-                            userResultSalary = CalcSalaryForSalesman(u.Id, fromDate, toDate);
-                            break;
-
-                        // Посчитаем сотруднику без должности ЗП по базовой должности
-                        default:
-                            Console.WriteLine("Ошибка, расчет ЗП идет не по должности (CalcSalaryForWorkersWithKnownSubs)");
-                            userResultSalary = CalcSalaryForEmployee(u.Id, fromDate, toDate);
-                            break;
-                    }
+                    userResultSalary = MakeSalaryCalcForPosition(u.Id, userPosition, fromDate, toDate);
                 }
                 else
                 {
                     // Посчитаем сотруднику без должности ЗП по базовой должности
-                    userResultSalary = CalcSalaryForEmployee(u.Id, fromDate, toDate);
-                    Console.WriteLine("Найден сотрудник без должности (CalcSalaryForWorkersWithKnownSubs)");
+                    userResultSalary = CalcSalaryForEmployee(fromDate, toDate);
+                    Console.WriteLine(Resources.WorkerWithoutRoleWithKnownSubs);
                 }
 
                 // Добавляем ЗП в общий массив
-                _workersSalary.Add(new SalaryOfWorker { WorkerId = u.Id, WorkerSalary = userResultSalary});
+                _workersSalary.Add(new SalaryOfWorker {WorkerId = u.Id, WorkerSalary = userResultSalary});
             }
         }
     }

@@ -135,4 +135,40 @@
   <data name="ThisIsNotUserListItemText" xml:space="preserve">
     <value>Выбранный объект не является объектом типа UserListItem</value>
   </data>
+  <data name="WorkerWithoutRoleWithKnownSubs" xml:space="preserve">
+    <value>Найден сотрудник без должности (сотрудники с уже известными подчиненными)</value>
+  </data>
+  <data name="ErrorCalcSalaryNoRoleWorker" xml:space="preserve">
+    <value>Ошибка, расчет ЗП идет не по должности</value>
+  </data>
+  <data name="FoundWorkerWithoutRoleWithoutSubs" xml:space="preserve">
+    <value>Найден сотрудник без должности (сотрудник без подчиненных)</value>
+  </data>
+  <data name="ErrorSalesmanPositionNotFound" xml:space="preserve">
+    <value>Ошибка, позиция Salesman не найдена в списке позиций</value>
+  </data>
+  <data name="SalaryForSalesmanSalaryForSubNotFound" xml:space="preserve">
+    <value>SalaryForSalesman, не найдена зарплата подчиненного</value>
+  </data>
+  <data name="ErrorManagerPositionNotFound" xml:space="preserve">
+    <value>Ошибка, позиция Manager не найдена в списке позиций</value>
+  </data>
+  <data name="SalaryForManagerSalaryForSubNotFound" xml:space="preserve">
+    <value>SalaryForManager, не найдена зарплата подчиненного</value>
+  </data>
+  <data name="ErrorEmployeePositionNotFound" xml:space="preserve">
+    <value>Ошибка, позиция Employee не найдена в списке позиций</value>
+  </data>
+  <data name="SalaryForThisSelectedWorkerNotFound" xml:space="preserve">
+    <value>ЗП для этого сотрудника просто нет (вычисление ЗП конкретного сотрудника)</value>
+  </data>
+  <data name="CannotSetNewUserPositionId" xml:space="preserve">
+    <value>Не удалось установить новую позицию для пользователя (позиция не найдена)</value>
+  </data>
+  <data name="CannotSetNewRoleToUserAsBossCannotRemove" xml:space="preserve">
+    <value>Не удалось установить новую роль сотруднику, так как не удалось удалить его как начальника у других пользователей</value>
+  </data>
+  <data name="ErrorNoUserToDelete" xml:space="preserve">
+    <value>Ошибка нет пользователя на удаление</value>
+  </data>
 </root>
